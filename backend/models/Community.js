@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 const CommunitySchema = new mongoose.Schema({
   name: String,
   description: String,
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  createdAt: { type: Date, default: Date.now },
+  members: { type: Number, default: 0 },
 });
 
-module.exports = mongoose.model("Community", CommunitySchema);
+var Community = (module.exports = mongoose.model(
+  "communities",
+  CommunitySchema,
+  "communities"
+));

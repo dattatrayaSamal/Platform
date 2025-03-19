@@ -26,6 +26,7 @@ io.on("connection", (socket) => {
   console.log("New user connected");
 
   socket.on("chatMessage", (message) => {
+    console.log("Message received on server:", message);
     io.emit("chatMessage", message);
   });
   socket.on("disconnect", () => {
