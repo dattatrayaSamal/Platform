@@ -1,9 +1,18 @@
 const mongoose = require("mongoose");
 const PostSchema = new mongoose.Schema(
   {
-    communityId: { type: mongoose.Schema.Types.ObjectId, ref: "Community" },
+    community: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Community",
+      required: true,
+    },
     content: { type: String, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    image: { type: String },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

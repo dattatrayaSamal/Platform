@@ -1,5 +1,5 @@
 const express = require("express");
-const bycrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 require("dotenv").config();
@@ -8,13 +8,13 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
-  const hashedPasswprd = await bycrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     const user = await User.create({
       username,
       email,
-      password: hashedPasswprd,
+      password: hashedPassword,
     });
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
@@ -37,6 +37,23 @@ router.post("/login", async (req, res) => {
     expiresIn: "1h",
   });
   res.json({ token });
+});
+
+router.get("/profile", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Get token from headers
+
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+    const user = await User.findById(decoded.id).select("-password"); // Get user data except password
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({ error: "Invalid token" });
+  }
 });
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require("express");
 const socket = require("socket.io");
 const http = require("http");
+const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./config/db");
 
@@ -11,9 +12,13 @@ const postRoutes = require("./routes/postRoutes");
 const app = express();
 const server = http.createServer(app);
 const io = socket(server, {
-  cors: { origin: process.env.CLIENT_URL },
+  cors: {
+    origin: "http://localhost:5173", // Allow frontend
+    methods: ["GET", "POST"],
+  },
 });
 
+app.use(cors());
 app.use(express.json());
 
 connectDB();

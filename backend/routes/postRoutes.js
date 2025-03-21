@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Post = require("../models/Post");
 
 const router = express.Router();
@@ -9,9 +10,14 @@ router.get("/", async (req, res) => {
     if (!community) {
       return res.status(400).json({ error: "Community ID is required" });
     }
+
+    if (!mongoose.Types.ObjectId.isValid(community)) {
+      return res.status(400).json({ error: "Invalid Community ID format" });
+    }
+
     const posts = await Post.find({
-      communityId: new ObjectId(community),
-    }).populate("createdBy");
+      community: new mongoose.Types.ObjectId(community),
+    }).populate("createdBy", "username email");
     res.json(posts);
   } catch (err) {
     console.log("Error fecthing posts:", err);
@@ -20,12 +26,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { communityId, content, createdBy } = req.body;
+  const { community, content, createdBy } = req.body;
+
+  console.log("Incoming Data:", req.body);
 
   try {
-    const post = await Post.create({ communityId, content, createdBy });
+    const post = await Post.create({ community, content, createdBy });
+    console.log("Post Created:", post);
     res.status(201).json(post);
   } catch (err) {
+    console.log(" Error Creating Post:", err);
     res.status(400).json({ error: "Post creation failed" });
   }
 });

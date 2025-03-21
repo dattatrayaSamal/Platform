@@ -1,26 +1,24 @@
 import React from "react";
 import "./App.css";
-import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Auth from "./pages/Auth";
 import CommunityList from "./components/CommunityList";
-import PostList from "./components/PostList";
+import CreateCommunity from "./components/CreateCommunity";
+// import PostList from "./components/PostList";
 import Chat from "./components/Chat";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import CommunityDetail from "./components/CommunityDetails";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <div>
-          <h1>Community Platform</h1>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Auth />} />
             <Route path="/communities" element={<CommunityList />} />
-            <Route path="/community/:id" element={<PostList />} />
+            <Route path="/create-community" element={<CreateCommunity />} />
+            <Route path="/community/:id" element={<CommunityDetail />} />
             <Route path="/chat" element={<Chat />} />
           </Routes>
         </div>
